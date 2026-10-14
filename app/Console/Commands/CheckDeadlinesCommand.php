@@ -19,7 +19,7 @@ class CheckDeadlinesCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Check task deadlines, update overdue status, and generate deadline notifications';
+    protected $description = 'Check configured task warning times, update overdue status, and queue reminder emails';
 
     /**
      * Execute the console command.
@@ -30,9 +30,8 @@ class CheckDeadlinesCommand extends Command
 
         $result = $monitoringService->checkDeadlines();
 
-        $this->info("Completed check: {$result['overdue_count']} tasks marked overdue and deadline alerts created.");
+        $this->info("Completed check: {$result['overdue_count']} overdue tasks and {$result['reminder_count']} upcoming reminders created.");
 
         return Command::SUCCESS;
     }
 }
-

@@ -1,10 +1,10 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Validation\UncompromisedVerifier;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 test('profile page requires authentication', function () {
     $response = $this->get('/profile');
@@ -51,7 +51,7 @@ test('user can update password', function () {
     expect(Hash::check('new-password-456', $user->password))->toBeTrue();
 });
 
-test('user can update alarm and notification preferences without a deadline threshold', function () {
+test('user can update alarm and scheduled reminder preferences', function () {
     $user = User::factory()->create([
         'alarm_sound_enabled' => true,
     ]);
@@ -59,12 +59,27 @@ test('user can update alarm and notification preferences without a deadline thre
     $response = $this->actingAs($user)->patch('/profile/preferences', [
         'alarm_sound_enabled' => false,
         'notify_task_created' => false,
+        'alert_threshold_minutes' => 180,
+        'notify_approaching' => false,
+        'notify_email_reminders' => true,
     ]);
 
     $response->assertSessionHas('success');
     $user->refresh();
     expect($user->alarm_sound_enabled)->toBeFalse();
     expect($user->notify_task_created)->toBeFalse();
+    expect($user->alert_threshold_minutes)->toBe(180);
+    expect($user->notify_approaching)->toBeFalse();
+    expect($user->notify_email_reminders)->toBeTrue();
+});
+
+test('new users receive the expected scheduled reminder defaults', function () {
+    $user = User::factory()->create();
+    $user->refresh();
+
+    expect($user->alert_threshold_minutes)->toBe(50);
+    expect($user->notify_approaching)->toBeTrue();
+    expect($user->notify_email_reminders)->toBeTrue();
 });
 
 test('user can upload a persistent profile picture', function () {
@@ -91,4 +106,3 @@ test('compromised-password checks have a bounded network timeout', function () {
 
     expect($timeout)->toBe(3);
 });
-

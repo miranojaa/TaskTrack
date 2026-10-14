@@ -31,7 +31,7 @@ export interface TaskAlert {
     id: number;
     user_id: number;
     task_id: number;
-    type: 'deadline_reached' | 'overdue' | 'created' | 'updated' | 'completed';
+    type: 'approaching' | 'deadline_reached' | 'overdue' | 'created' | 'updated' | 'completed';
     message: string;
     is_read: boolean;
     read_at: string | null;

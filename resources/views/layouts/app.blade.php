@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'TaskTrack - Task Management & Deadline Notification System')</title>
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="/tasktrack-mark.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -131,7 +131,7 @@
                         if ('Notification' in window && Notification.permission === 'granted' && localStorage.getItem('tasktrack-desktop-notifications') === 'true') {
                             new Notification(`TaskTrack: ${alert.type.replace('_', ' ')}`, {
                                 body: alert.message,
-                                icon: '/favicon.ico'
+                                icon: '/tasktrack-mark.svg'
                             });
                         }
                         showToast(alert.type === 'overdue' || alert.type === 'deadline_reached' ? 'Task Deadline' : `Task ${alert.type}`, alert.message, alert.type);
@@ -165,12 +165,13 @@
             <!-- Brand -->
             <div class="flex items-center gap-6">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 font-black text-xl tracking-tight text-indigo-600">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-500/20">
+                    <img src="/tasktrack-mark.svg" alt="" class="h-9 w-9">
+                    <div class="hidden">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                     </div>
-                    <span class="text-slate-900 font-extrabold text-lg">Task<span class="text-indigo-600">Track</span></span>
+                    <span class="text-slate-900 font-extrabold text-lg">Task<span class="text-[#0875F5]">Track</span></span>
                 </a>
 
                 <nav class="hidden md:flex items-center gap-1">

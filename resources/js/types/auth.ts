@@ -9,6 +9,9 @@ export type User = {
     alarm_sound_enabled?: boolean;
     alarm_sound?: string;
     alarm_volume?: number;
+    alert_threshold_minutes?: number;
+    notify_approaching?: boolean;
+    notify_email_reminders?: boolean;
     notify_task_created?: boolean;
     notify_task_updated?: boolean;
     notify_task_completed?: boolean;

@@ -4,20 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>TaskTrack - Task Management & Deadline Notification System</title>
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="/tasktrack-mark.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-full bg-gradient-to-b from-slate-50 via-white to-indigo-50/30 text-slate-900 antialiased flex flex-col">
     <!-- Header -->
     <header class="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center gap-3">
-            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-600/30">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
-            </div>
-            <span class="text-xl font-black tracking-tight text-slate-900">
-                Task<span class="text-indigo-600">Track</span>
+        <div class="flex flex-col items-center justify-center leading-none">
+            <img src="/tasktrack-mark.svg" alt="" class="h-11 w-11">
+            <span class="mt-0.5 text-base font-black tracking-tight text-slate-900">
+                Task<span class="text-[#0875F5]">Track</span>
             </span>
         </div>
 

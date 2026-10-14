@@ -1,0 +1,18 @@
+{
+  "name": "TaskTrack",
+  "short_name": "TaskTrack",
+  "description": "Task management and deadline reminders",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f3f6f8",
+  "theme_color": "#12304a",
+  "icons": [
+    {
+      "src": "/tasktrack-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

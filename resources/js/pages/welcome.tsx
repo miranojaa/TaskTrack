@@ -1,21 +1,21 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { ToastViewport } from '@/components/toast-viewport';
 
 export default function Welcome() {
+    const { flash } = usePage<{ flash?: { success?: string; error?: string } }>().props;
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-indigo-50/30 text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20 dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+            <ToastViewport flash={flash} />
             <Head title="TaskTrack - Task Management & Deadline Notification System" />
 
             {/* Top Navigation */}
             <header className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-600/30">
-                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                        </svg>
-                    </div>
-                    <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
-                        Task<span className="text-indigo-600 dark:text-indigo-400">Track</span>
+                <div className="flex flex-col items-center justify-center leading-none">
+                    <img src="/tasktrack-mark.svg" alt="" className="h-11 w-11" />
+                    <span className="mt-0.5 text-base font-black tracking-tight text-slate-900 dark:text-white">
+                        Task<span className="text-[#0875F5]">Track</span>
                     </span>
                 </div>
 

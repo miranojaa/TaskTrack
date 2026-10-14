@@ -14,6 +14,8 @@ class TaskAlert extends Model
         'user_id',
         'task_id',
         'type',
+        'reminder_key',
+        'email_queued_at',
         'message',
         'is_read',
         'read_at',
@@ -22,6 +24,7 @@ class TaskAlert extends Model
     protected $casts = [
         'is_read' => 'boolean',
         'read_at' => 'datetime',
+        'email_queued_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

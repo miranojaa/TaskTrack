@@ -4,18 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sign In - TaskTrack</title>
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="/tasktrack-mark.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-full bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 text-slate-900 antialiased">
     <div class="sm:mx-auto sm:w-full sm:max-w-md text-center px-4">
-        <a href="/" class="inline-flex items-center gap-2.5 font-black text-2xl tracking-tight text-indigo-600">
-            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/25">
+        <a href="/" class="inline-flex flex-col items-center gap-1 font-black tracking-tight">
+            <img src="/tasktrack-mark.svg" alt="" class="h-16 w-16">
+            <div class="hidden">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
             </div>
-            <span class="text-slate-900 font-black text-2xl">Task<span class="text-indigo-600">Track</span></span>
+            <span class="text-slate-900 font-black text-2xl">Task<span class="text-[#0875F5]">Track</span></span>
         </a>
         <h2 class="mt-6 text-2xl font-extrabold text-slate-900">Welcome back to TaskTrack</h2>
         <p class="mt-2 text-xs sm:text-sm text-slate-500">Sign in to track your tasks and stay ahead of deadlines</p>

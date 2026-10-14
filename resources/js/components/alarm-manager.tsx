@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { router } from '@inertiajs/react';
 import { soundManager } from '@/lib/sound';
 import { TaskAlert } from '@/types';
+import { showToast } from '@/components/toast-viewport';
 
 interface AlarmManagerProps {
     soundEnabled: boolean;
@@ -12,7 +13,6 @@ export const AlarmManager: React.FC<AlarmManagerProps> = ({
     soundEnabled,
     onNewAlert,
 }) => {
-    const [floatingAlerts, setFloatingAlerts] = useState<Array<{ id: number; title: string; message: string; type: string }>>([]);
     const [activeAlert, setActiveAlert] = useState<TaskAlert | null>(null);
     const knownAlertIdsRef = useRef<Set<number>>(new Set());
     const isFirstLoadRef = useRef(true);
@@ -61,31 +61,36 @@ export const AlarmManager: React.FC<AlarmManagerProps> = ({
 
                 const data = await response.json();
                 const unread: TaskAlert[] = data.unread_alerts || [];
+                const latestApproachingAlert = unread.find((alert) => alert.type === 'approaching');
                 schedulePoll(data.next_alarm_at);
 
                 unread.forEach((alert) => {
                     if (!knownAlertIdsRef.current.has(alert.id)) {
                         knownAlertIdsRef.current.add(alert.id);
 
-                        if (!isFirstLoadRef.current || alert.type === 'overdue' || alert.type === 'deadline_reached') {
+                        const showMissedWarning = isFirstLoadRef.current
+                            && alert.id === latestApproachingAlert?.id;
+                        if (!isFirstLoadRef.current || alert.type === 'overdue' || alert.type === 'deadline_reached' || showMissedWarning) {
                             // Desktop Notification
                             if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted' && localStorage.getItem('tasktrack-desktop-notifications') === 'true') {
                                 new Notification(`TaskTrack: ${alert.type.replace('_', ' ')}`, {
                                     body: alert.message,
-                                    icon: '/favicon.ico',
+                                    icon: '/tasktrack-mark.svg',
                                 });
                             }
 
-                            // Add to floating UI toast
-                            setFloatingAlerts((prev) => [
-                                ...prev,
-                                {
-                                    id: alert.id,
-                                    title: alert.type === 'overdue' || alert.type === 'deadline_reached' ? 'Task Deadline' : `Task ${alert.type}`,
-                                    message: alert.message,
-                                    type: alert.type,
-                                },
-                            ]);
+                            const isDeadline = alert.type === 'overdue' || alert.type === 'deadline_reached';
+                            const isUrgent = alert.type === 'approaching' && alert.task?.priority === 'urgent';
+                            if (alert.type === 'approaching') {
+                                soundManager.playOverdueAlarm();
+                            }
+                            showToast({
+                                kind: isDeadline || isUrgent ? 'error' : alert.type === 'approaching' ? 'warning' : 'info',
+                                title: isDeadline ? 'Task deadline' : alert.type === 'approaching' ? 'Upcoming task' : 'Task update',
+                                message: alert.message,
+                                dedupeKey: `task-alert-${alert.id}`,
+                                onDismiss: () => router.post(`/api/alerts/read/${alert.id}`, {}, { preserveState: true, preserveScroll: true }),
+                            });
 
                             if (onNewAlert) {
                                 onNewAlert(alert);
@@ -130,10 +135,6 @@ export const AlarmManager: React.FC<AlarmManagerProps> = ({
         };
     }, [onNewAlert]);
 
-    const dismissToast = (id: number) => {
-        setFloatingAlerts((prev) => prev.filter((a) => a.id !== id));
-    };
-
     const completeTask = () => {
         if (!activeAlert) return;
         const alert = activeAlert;
@@ -177,46 +178,6 @@ export const AlarmManager: React.FC<AlarmManagerProps> = ({
                     </section>
                 </div>
             )}
-            {/* Floating Toast Notification Stack */}
-            <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
-                {floatingAlerts.map((alert) => (
-                    <div
-                        key={alert.id}
-                        className={`pointer-events-auto flex items-start gap-3 rounded-2xl p-4 shadow-xl ring-1 transition-all animate-bounce ${
-                            alert.type === 'overdue' || alert.type === 'deadline_reached'
-                                ? 'bg-rose-50 ring-rose-300 text-rose-900 dark:bg-rose-950 dark:ring-rose-800 dark:text-rose-100'
-                                : 'bg-amber-50 ring-amber-300 text-amber-900 dark:bg-amber-950 dark:ring-amber-800 dark:text-amber-100'
-                        }`}
-                    >
-                        <div className="shrink-0 mt-0.5">
-                            {alert.type === 'overdue' || alert.type === 'deadline_reached' ? (
-                                <svg className="w-5 h-5 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                            ) : (
-                                <svg className="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            )}
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-sm">{alert.title}</h4>
-                            <p className="mt-0.5 text-xs opacity-90">{alert.message}</p>
-                        </div>
-
-                        <button
-                            type="button"
-                            onClick={() => dismissToast(alert.id)}
-                            className="shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                        >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                ))}
-            </div>
         </>
     );
 };
